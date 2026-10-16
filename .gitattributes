@@ -2,3 +2,5 @@
 *.png binary
 *.ico binary
 *.syso binary
+# Embedded assets must retain the exact bytes used in the verified Windows build.
+web/** -text

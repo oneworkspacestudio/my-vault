@@ -374,3 +374,9 @@ Both are prereleases with existing production gates disclosed, no Actions. Remot
 main branches matched local bases before changes. Corresponding upstream/dependency
 archives are unchanged from the previously verified/corrected public release; the
 new launcher source archive must include the presentation/OIDC/service work.
+
+Release reproducibility check found Git's LF normalization changed raw embedded
+web assets relative to the tested Windows build. Preserve web/** as -text in
+.gitattributes and record those original bytes; no runtime/crypto change. Verify
+all embedded asset blobs match before archiving/releasing. Rebuilding the launcher
+from the current runtime/source already reproduced the exact tested RC2 hash.
