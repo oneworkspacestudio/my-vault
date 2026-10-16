@@ -20,15 +20,16 @@ import (
 )
 
 type localRequest struct {
-	Password  string `json:"password"`
-	Confirm   string `json:"confirm"`
-	Identity  string `json:"identity"`
-	Recipient string `json:"recipient"`
-	Path      string `json:"path"`
-	Email     string `json:"email"`
-	Origin    string `json:"origin"`
-	Hours     int    `json:"hours"`
-	Keep      int    `json:"keep"`
+	Password  string    `json:"password"`
+	Confirm   string    `json:"confirm"`
+	Identity  string    `json:"identity"`
+	Recipient string    `json:"recipient"`
+	Path      string    `json:"path"`
+	Email     string    `json:"email"`
+	Origin    string    `json:"origin"`
+	Hours     int       `json:"hours"`
+	Keep      int       `json:"keep"`
+	SSO       SSOConfig `json:"sso"`
 }
 
 func (rt *Runtime) managementHandler() http.Handler {
@@ -38,7 +39,7 @@ func (rt *Runtime) managementHandler() http.Handler {
 		rt.gate.RLock()
 		defer rt.gate.RUnlock()
 		status := readStatus(rt.root)
-		writeJSON(w, map[string]any{"recovery": status, "settings": rt.config, "vaultURL": rt.config.Origin, "localVaultURL": rt.config.LocalURL() + "/", "busy": rt.busy.Load(), "dataFolder": rt.root})
+		writeJSON(w, map[string]any{"recovery": status, "settings": rt.config, "vaultURL": rt.config.Origin, "localVaultURL": rt.config.LocalURL() + "/", "busy": rt.busy.Load(), "dataFolder": rt.root, "myAccounts": map[string]any{"enabled": rt.sso.Enabled, "issuer": rt.sso.Issuer, "warning": rt.ssoWarning}})
 	})
 	mux.HandleFunc("POST /api/{action}", func(w http.ResponseWriter, r *http.Request) {
 		rt.operations.Lock()
@@ -57,6 +58,16 @@ func (rt *Runtime) managementHandler() http.Handler {
 		var result any = map[string]bool{"ok": true}
 		var e error
 		switch r.PathValue("action") {
+		case "sso":
+			if input.SSO.Enabled {
+				e = input.SSO.checkDiscovery(ctx)
+			}
+			if e == nil {
+				e = rt.maintenance(ctx, func() error { return platform.SaveJSON(filepath.Join(rt.root, "myvault-sso.json"), input.SSO) })
+			}
+			if e == nil {
+				result = map[string]string{"message": "MyAccounts sign-in settings applied. Independent master-password sign-in remains available."}
+			}
 		case "trust-local":
 			if input.Confirm != "trust-localhost" {
 				e = errors.New("explicit local certificate trust confirmation is required")
@@ -252,7 +263,7 @@ func Control(root, action string) error {
 	return nil
 }
 
-var recoveryPage = template.Must(template.New("recovery").Parse(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My Vault · Recovery &amp; Portability</title><link rel="stylesheet" href="{{.Base}}/my-vault.css"><main class="myvault-guide"><h1>Recovery &amp; Portability</h1><p>Your vault remains yours when the server is gone.</p><h2>Three different safety nets</h2><ul><li><b>Server backup:</b> an age-encrypted copy of accounts, encrypted vault database, attachments and server keys. Restore with MyVault.exe on a fresh computer and your independent backup password/key.</li><li><b>Portable vault export:</b> choose Tools → Export vault → encrypted JSON → Password protected in the compatible client. Use a separate strong export password. Account restricted exports alone cannot recover a lost account.</li><li><b>Offline client cache:</b> first sign in and sync, then lock (do not log out). Disconnect the device and test unlocking. Logging out, reinstalling, changing devices or losing app data can remove this cache.</li></ul><h2>Set up before you need it</h2><ol><li>Install an official Bitwarden extension, desktop or mobile client and configure your self-hosted URL.</li><li>Sync, lock and test offline unlocking on two devices. Do not assume offline editing/sync.</li><li>Enable compatible MFA and keep its recovery code outside this server.</li><li>Make a password-protected export; import it into a fresh independent account and inspect the restored items.</li><li>Make and verify an encrypted full server backup on independent storage.</li><li>Keep your master password, backup/export passwords or age identity, MFA recovery codes and restore instructions independently.</li></ol><h2>Restore without One Workspace or MyAccounts</h2><ol><li>Obtain the verified MyVault.exe and a copy of your .age backup.</li><li>On a clean Windows PC, run <code>MyVault.exe restore --data C:\MyVault-Recovered --input X:\myvault.age --origin http://localhost:8914</code>.</li><li>Enter the independent backup key/passphrase in the local restore wizard.</li><li>Run <code>MyVault.exe run --data C:\MyVault-Recovered</code> and log in with your vault email/master password and MFA.</li><li>For a portable export instead, create a fresh independent compatible account, choose Tools → Import data → Bitwarden JSON and enter the export password.</li><li>Check item counts, notes and login values; retrieve separately backed-up attachments and organisation items.</li></ol><h2>Know the limits</h2><p>JSON export is not a full server backup. Attachments, organisation-owned items, Sends, passkeys, SSH keys and authenticator data vary by format and client version; see the shipped acceptance and client guides. An exported file's presence is not proof it will import. The web vault is not an offline client.</p><h2>Backup status and owner tools</h2><p>Run <code>MyVault.exe manage --data YOUR_PRIVATE_FOLDER</code> on the server to see last encrypted backup, integrity verification, portable-export record, retention and restore tools. This page exposes no private backup paths or account status.</p><p><a href="{{.Origin}}/">Return to My Vault →</a></p><p>Compatible clients perform vault decryption. MyAccounts and this companion cannot recover an unknown master password from encrypted vault data.</p></main></html>`))
+var recoveryPage = template.Must(template.New("recovery").Parse(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My Vault · Recovery &amp; Portability</title><link rel="stylesheet" href="{{.Base}}/my-vault.css"><main class="myvault-guide"><h1>Recovery &amp; Portability</h1><p>Your vault remains yours when the server is gone.</p><h2>Three different safety nets</h2><ul><li><b>Server backup:</b> an age-encrypted copy of accounts, encrypted vault database, attachments and server keys. Restore with MyVault.exe on a fresh computer and your independent backup password/key.</li><li><b>Portable vault export:</b> choose Tools → Export vault → encrypted JSON → Password protected in the compatible client. Use a separate strong export password. Account restricted exports alone cannot recover a lost account.</li><li><b>Offline client cache:</b> first sign in and sync, then lock (do not log out). Disconnect the device and test unlocking. Logging out, reinstalling, changing devices or losing app data can remove this cache.</li></ul><h2>Set up before you need it</h2><ol><li>Install an official Bitwarden extension, desktop or mobile client and configure your self-hosted URL.</li><li>Sync, lock and test offline unlocking on two devices. Do not assume offline editing/sync.</li><li>Enable compatible MFA and keep its recovery code outside this server.</li><li>Make a password-protected export; import it into a fresh independent account and inspect the restored items.</li><li>Make and verify an encrypted full server backup on independent storage.</li><li>Keep your master password, backup/export passwords or age identity, MFA recovery codes and restore instructions independently.</li></ol><h2>Restore without One Workspace or MyAccounts</h2><ol><li>Obtain the verified MyVault.exe and a copy of your .age backup.</li><li>On a clean Windows PC, run <code>MyVault.exe restore --data C:\MyVault-Recovered --input X:\myvault.age --origin https://localhost:8915</code>.</li><li>Enter the independent backup key/passphrase in the local restore wizard.</li><li>Run <code>MyVault.exe run --data C:\MyVault-Recovered</code> and log in with your vault email/master password and MFA.</li><li>For a portable export instead, create a fresh independent compatible account, choose Tools → Import data → Bitwarden JSON and enter the export password.</li><li>Check item counts, notes and login values; retrieve separately backed-up attachments and organisation items.</li></ol><h2>Know the limits</h2><p>JSON export is not a full server backup. Attachments, organisation-owned items, Sends, passkeys, SSH keys and authenticator data vary by format and client version; see the shipped acceptance and client guides. An exported file's presence is not proof it will import. The web vault is not an offline client.</p><h2>Backup status and owner tools</h2><p>Run <code>MyVault.exe manage --data YOUR_PRIVATE_FOLDER</code> on the server to see last encrypted backup, integrity verification, portable-export record, retention and restore tools. This page exposes no private backup paths or account status.</p><p><a href="{{.Origin}}/">Return to My Vault →</a></p><p>Compatible clients perform vault decryption. MyAccounts and this companion cannot recover an unknown master password from encrypted vault data.</p></main></html>`))
 
 func serveRecovery(w http.ResponseWriter, r *http.Request, origin string) {
 	u := strings.TrimRight(origin, "/")

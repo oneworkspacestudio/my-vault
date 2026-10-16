@@ -49,7 +49,7 @@ func run() error {
 	f := flag.NewFlagSet(action, flag.ContinueOnError)
 	data := f.String("data", defaultData(), "Private local NTFS data folder")
 	listen := f.String("listen", "", "Fixed loopback listener")
-	origin := f.String("origin", "", "Dedicated HTTPS URL, or local loopback HTTP")
+	origin := f.String("origin", "", "Dedicated HTTPS URL, or the secure localhost URL")
 	noBrowser := f.Bool("no-browser", false, "Do not open local owner tools")
 	input := f.String("input", "", "Independent age-encrypted backup")
 	output := f.String("output", "", "New .age backup file")

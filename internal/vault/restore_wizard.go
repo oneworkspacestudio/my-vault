@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"net"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -16,6 +17,23 @@ import (
 // The restore wizard runs without any original account/issuer/server. No vault
 // master password is collected, only the independently held backup secret.
 func RestoreWizard(ctx context.Context, root, input, listen, origin string) error {
+	if listen == "" {
+		listen = "127.0.0.1:8914"
+	}
+	if origin == "" {
+		_, port, e := net.SplitHostPort(listen)
+		if e != nil {
+			return e
+		}
+		n, e := strconv.Atoi(port)
+		if e != nil {
+			return e
+		}
+		origin = "https://localhost:" + strconv.Itoa(n+1)
+	}
+	if e := (Config{Schema: 1, Listen: listen, Origin: origin, Retention: 7}).Validate(); e != nil {
+		return e
+	}
 	listener, e := net.Listen("tcp4", "127.0.0.1:0")
 	if e != nil {
 		return e

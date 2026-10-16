@@ -7,7 +7,7 @@
   "checks": {
     "nativeWindowsSourceBuild": "passed: MSVC static CRT, SQLite/OpenSSL bundled; reviewed rustls 0.23.46 dependency lock",
     "freshWindowsDeployment": "passed: empty isolated NTFS data root, no Docker/database installation",
-    "browserVaultCreateSyncUnlock": "pending: HTTP rejection discovered and fixed with native localhost HTTPS; Windows certificate trust and browser end-to-end confirmation pending",
+    "browserVaultCreateSyncUnlock": "passed on same Windows host with synthetic account: trusted localhost HTTPS, existing-account browser login, create encrypted login, official CLI sync/decrypt, CLI edit reflected in browser, browser lock/unlock; browser registration remains unperformed",
     "officialClientInterop": "passed: CLI login, sync, decrypt login/password/secure note, folder search, generate, TOTP and attachment upload/download",
     "independentWithoutMyAccounts": "passed: no Workspace/MyAccounts process or configuration in standalone fixtures",
     "offlineUnlock": "passed: official CLI locked, original server stopped, cache unlocked and item decrypted; desktop/extension and second device unperformed",
@@ -16,7 +16,7 @@
     "originalServerUnavailableRecovery": "passed in isolated same-host environment: source server stopped and not used by target; only archive and independent secrets required",
     "multiUserAuthorization": "passed: same-server second user denied another user item and sync returned only own empty vault",
     "unauthorizedManagementAndSecretLeakage": "passed targeted native/unit checks: capability, Host, Origin, no reflected token, plaintext marker absent from encrypted archives; not a comprehensive penetration test",
-    "rateLimitsAndTLSValidation": "passed: native login limiting, spoofed IP headers cannot change bucket; untrusted certificate rejected, native local HTTPS accepted only with process-specific trust",
+    "rateLimitsAndTLSValidation": "passed: native login limiting, spoofed IP headers cannot change bucket; untrusted certificate rejected; native local HTTPS accepted with process-specific CLI trust and explicit owner-approved Windows current-user trust, no browser warning bypass",
     "corruptionAndWrongBackupSecret": "passed: native and unit rejection, no retained plaintext verification stages",
     "upgradeRollbackAndDataPreservation": "passed: patched launcher reopened original data; final encrypted snapshot restored into a fresh root with original items and exact attachments; schema downgrade/migration and power-loss rollback not tested",
     "serviceUninstallKeepsData": "source implementation retains data; native Windows service lifecycle unperformed",
@@ -24,11 +24,20 @@
     "rebootWindowsService": "not performed",
     "desktopAndBrowserExtension": "not performed",
     "mfaPasskeysSharedCollections": "not verified; no support claim beyond upstream compatibility",
-    "securityDependencyReview": "new rustls patched; remaining upstream advisories and configuration assessment in SECURITY-REVIEW.md; independent security review pending"
+    "securityDependencyReview": "new rustls patched; remaining upstream advisories and configuration assessment in SECURITY-REVIEW.md; independent security review pending",
+    "webBranding": "passed same-host browser review: My Vault logo, dynamic page titles, light Material-inspired sidebar/content, blue controls and versioned assets; original upstream JS remains unchanged; RC2 light surfaces and readable text verified with upstream theme_dark/OS dark preference",
+    "myAccountsSSO": "passed isolated native MyAccounts and browser: verified-email existing-account association, authorization code with PKCE, repeat browser session reused without a second identity password prompt, separate vault master-password unlock; no automatic SSO signup",
+    "myAccountsUnavailable": "passed candidate regression: MyAccounts stopped, independent password login and item decryption worked with existing SSO association",
+    "candidateRecoveryRegression": "passed exact 0.2.0-rc.2: browser edit independently decrypted, verified age backup, source stopped, new data root/clean CLI profiles, exact attachment bytes, independent encrypted export/import and offline CLI unlock",
+    "serviceBinaryProtection": "implemented protected administrator-owned NTFS supervisor copy; non-admin install rejection tested; elevated native lifecycle and reboot still unperformed",
+    "firstAccountNativeRegistration": "passed: disposable first-run account created with official SDK using compatible legacy registration envelope; browser Create account submission not automated",
+    "existingRootExecutableReplacement": "passed 0.2.0-rc.2 on same host: verified encrypted backup before replacement, original account/master password/item/certificate retained, clean CLI profile sign-in and browser unlock/edit passed; no clean-host reinstall claim",
+    "workspaceCandidateInstaller": "passed actual local 0.3.0-rc.2 offline installer: 13 apps installed, 11 process health checks, exact RC2 vault binary, optional MyAccounts configured, independent launcher/guides, existing autostart unchanged; live installation untouched"
   },
   "checkedAt": "2026-10-16",
   "testedClient": "Official Bitwarden CLI 2026.9.1; compatible web vault 2026.7.0",
   "environment": "Windows amd64 on owner host, synthetic accounts, separate protected data roots and clean CLI profiles; no live Workspace or MyAccounts",
-  "launcherSHA256": "7032aacd678f1bd3656d84338defbd1a4d39112556b5ed7383bfa3521154a850",
-  "engineSHA256": "5aa19bc46dda061e20a373ddde0f92cc0f94ae15f2f14b61e8fb7e00f793169f"
+  "launcherSHA256": "bf8ec3ec6fd5a73ab35946d926efd00cd3b1ffe537b38a1b2c7e4f6e787916fe",
+  "engineSHA256": "5aa19bc46dda061e20a373ddde0f92cc0f94ae15f2f14b61e8fb7e00f793169f",
+  "candidateVersion": "0.2.0-rc.2"
 }

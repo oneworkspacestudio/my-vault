@@ -222,3 +222,155 @@ Windows trust is still unchanged: certificate approval question unanswered.
 Browser/desktop/extension, second physical host, MFA/passkeys/collections,
 service/reboot and independent security acceptance remain explicitly open.
 Do not change productionEligible to true or call this a production release.
+
+## Owner-approved local browser acceptance
+
+On 2026-10-16 the owner explicitly approved local certificate trust and manually
+accepted the Windows certificate dialog. Exact generated certificate thumbprint
+was checked against the dialog and CurrentUser Root afterward. No browser warning
+was bypassed. Trust applies to this synthetic localhost fixture, not a public
+hosting certificate. The previously pending trust paragraphs above are superseded.
+
+Actual in-app browser acceptance passed on the final published executable:
+existing synthetic account sign-in over trusted HTTPS, browser creation of an
+encrypted login, official CLI sync/decrypt with exact value comparison, CLI edit
+visible in the browser, browser lock and existing-master-password unlock. The
+fixture account was seeded through the official SDK; browser registration was not
+tested. No personal vault/account data used. Receipt and synthetic proof screenshot
+remain outside Git under tooling/my-vault/browser-acceptance.json and
+browser-sync-proof.jpg. Acceptance matrix updated locally; no commit/push/release
+performed in this continuation and published binary assets are unchanged.
+
+Found presentation defect: authenticated web client still shows Vaultwarden logo
+and dynamic page titles. Existing static branding selector does not cover all
+rendered surfaces. Preserve original licensing notices; a future fix should remain
+additive presentation and retain unchanged cryptographic JS verification.
+
+Production eligibility remains false: browser registration, desktop/extension,
+clean physical host, service/reboot, MFA/passkeys/shared collections and independent
+security review remain open; mobile stays deferred. Synthetic test server is
+running for preview on HTTPS localhost:18935, HTTP gateway18934, tracked PID in
+external tooling/my-vault/browser-test.pid. Root is the retained native-final-
+recovered fixture under the named NTFS cache, not the live Workspace installation.
+Use the published launcher stop command with that exact root when preview ends;
+retain approved cert unless the owner requests its removal. Never publish fixture
+credentials or modify live suite data to repeat these checks.
+
+## Branded UI and optional MyAccounts release candidate
+
+The owner requested production completion, ecosystem branding/Google-style UI and
+seamless existing-session sign-in. Implemented locally; no commit/push/release in
+this continuation. Public preview1 remains unchanged. ProductionEligible is false.
+
+Added additive Material-inspired light UI, own logo on authenticated/auth screens,
+dynamic titles and recovery/restore branding. Original upstream JavaScript remains
+byte-identical. Content-hashed theme assets and no-store HTML fix stale branding;
+verified sidebar/main layout without horizontal overflow. Actual browser captures
+are docs/screenshots/vault.jpg and recovery.png. Licensing disclosures retained.
+
+Optional native upstream OIDC uses a protected myvault-sso.json outside backups,
+verified discovery/HTTPS, PKCE, verified-email existing independent account matching,
+no SSO-only or automatic signup. Public client config contains no secrets. Owner
+can configure/disable it. Dedicated Workspace client setup is implemented in suite.
+Existing MyAccounts browser session was reused on repeat native OIDC sign-in; vault
+master-password unlock remains separate. No key/password is passed to Workspace.
+Independent browser/CLI login works with MyAccounts stopped and SSO associated.
+Docs SIGN-IN.md and PRODUCTION-GATES.md explain boundaries and remaining checks.
+
+Fixed restore wizard default HTTPS and expired local-cert diagnosis. Native service
+installation now copies supervisor into administrator-owned ACL-protected NTFS
+ProgramData from Windows KnownFolderPath; rejects unprivileged installation before
+mutations and precreated user-owned destinations. Non-admin rejection passed;
+elevated native lifecycle/reboot remain unperformed. Uninstall preserves data.
+
+Final candidate 0.2.0-rc.1 at tooling/my-vault/candidate-final/MyVault.exe has SHA256
+572da2056458614f131eac9f6145795b47e6905d94dd29fea9827bd4f2738ce6. Engine stays
+5aa19bc46dda061e20a373ddde0f92cc0f94ae15f2f14b61e8fb7e00f793169f. Go tests/vet and
+govulncheck passed (zero affected/imported vulnerable packages; unused module-level
+advisory retained). Exact final binary passed independent login with identity down,
+verified age backup, stopped-source offline CLI unlock, fresh-root restore/clean
+client and exact attachment bytes, independent encrypted JSON export/import; JSON
+does not contain attachments. Same physical Windows host only. Receipts outside
+Git: rc-final-native-acceptance.json and rc-workspace-suite/acceptance.json. Full
+local offline Workspace RC installed13apps/11healthy process apps, exact final vault,
+automatic optional identity setup, independent launcher and guides; autostart/live
+installation unchanged. Final installer in tooling/my-vault/candidate-suite-final.
+
+Cleaned disposable regression roots/profiles and stopped suite children after exact
+canonical/reparse/process checks. Retained synthetic evidence under protected
+sso-fixture/test-evidence. Previous native-final-recovered root is now deleted:
+the earlier preview-root paragraph is superseded. Current manual-registration
+preview root is C:/Projects/.cache/my-vault-build/sso-fixture/my-vault, HTTP18934,
+HTTPS localhost18935, PID79588 (verify before use), running dist/MyVault.exe. This
+dist binary is an earlier same-UI RC SHA3f1ce1ee..., preceding final service hardening.
+Do not overwrite while running. Synthetic MyAccounts fixture19951 is stopped.
+Approved current-user test certificate remains; no new trust or warning bypass.
+
+Browser registration reached finish-signup but is NOT passed. Human must enter new
+credentials themselves under browser-control rules. Owner reported nothing on
+screen; enabled IAB visibility and captured the blank master-password form, marked
+tab26 handoff. Enrollment temporarily renewed for the synthetic first-run account.
+No new password entered/known. Resume by verifying visible page and human result,
+renew enrollment if expired through capability-protected owner API. Retain this
+fixture while handoff is pending; stop it afterward. Never publish fixture secrets.
+After user finishes, final binary can replace stopped dist and reopen same root.
+
+Open production gates: manual registration, desktop/extension, clean physical host,
+elevated service/reboot, MFA/passkeys/shared collections, independent security review.
+Mobile remains explicitly deferred. Local RC is reviewable, not a production release.
+
+## Disposable first-run and replacement acceptance — RC2
+
+Owner declined further manual entry and requested disposable-password testing
+before reinstalling. Created a synthetic account through the official SDK using
+the compatible legacy registration envelope, then signed in through the browser,
+saved an encrypted login and independently decrypted it with official CLI. Replaced
+the stopped executable while retaining the same private root; original account,
+master password, item and certificate survived. Fresh CLI profile login and browser
+unlock/read/edit passed. No owner passwords/data were changed. Browser Create
+account submission itself remains unperformed; do not claim that particular UI
+action passed or infer the original no-screen report's cause from SDK success.
+
+Screenshot review caught a real defect: OS dark preference left dark dialog/card
+surfaces under light text overrides. Added web/client-light-tokens.css from all284
+light variables in pinned compatible-client tw-theme.css; packager prepends it to
+the branded stylesheet, including native control color-scheme. Original JS unchanged.
+Confirmed theme_dark HTML now produces white dialog/card surfaces and #202124 text.
+Fixed public recovery guide's obsolete HTTP restore command and added a Go test.
+
+Current final My Vault0.2.0-rc.2 SHA256 is
+bf8ec3ec6fd5a73ab35946d926efd00cd3b1ffe537b38a1b2c7e4f6e787916fe, at
+tooling/my-vault/candidate-rc2/MyVault.exe and repo dist/MyVault.exe. This supersedes
+RC1 candidate-final/dist references. Exact RC2 passed independent original-browser
+edit decryption, verified backup, stopped-source offline unlock, fresh-root clean
+client/attachment recovery, identity-config exclusion and independent encrypted
+export/import. Go tests/vet passed; govulncheck has zero affected/imported findings,
+same unused module-level advisory. Receipts: first-run-rc2-reinstall-acceptance.json,
+rc2-final-native-acceptance.json; proof first-run-rc2-proof.jpg, all outside Git.
+
+Full installer0.3.0-rc.2 in tooling/my-vault/candidate-suite-rc2 passed fresh offline
+13app install/11process health, exact RC2 vault, automatic optional identity setup,
+anonymous dedicated launcher/guides and unchanged prior autostart. SHA256
+3ee9447043f721fe45a06a4b50516bda14753b56dac62516bcbc51eea27ff818. Sidecar
+ACCEPTANCE.json records final results; embedded guide matrix is the pre-test snapshot.
+Standalone ZIP/checksums in candidate-rc2; no fixture data/secrets packaged. Online
+installer still fetches public preview25: local RC must launch with --offline.
+
+All owned vault/identity/suite processes stopped. Previous registration handoff is
+cancelled; no user action is pending. Removed RC2 recovered roots, CLI caches and
+temporary full suite after canonical/reparse/process checks; retained one stopped
+synthetic source root sso-fixture/my-vault, its approved certificate and protected
+test-evidence. Cleanup receipt rc2-cleanup.json; C free afterward5,926,522,880bytes.
+Do not rerun external fixture scripts blindly: their fresh targets/evidence names
+have been used or relocated. No commit/push/release or live installation change.
+Production gates in PRODUCTION-GATES.md still apply; this remains a local RC.
+
+## Publication authorized
+
+Owner explicitly requested all current work pushed/released, My Vault included in
+One Workspace and both READMEs updated. Release target is v0.2.0-rc.2 using the exact
+tested binary; Workspace target is v0.3.0-preview.26 with the new org ZIP pin.
+Both are prereleases with existing production gates disclosed, no Actions. Remote
+main branches matched local bases before changes. Corresponding upstream/dependency
+archives are unchanged from the previously verified/corrected public release; the
+new launcher source archive must include the presentation/OIDC/service work.

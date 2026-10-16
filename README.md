@@ -7,15 +7,21 @@
 
 My Vault packages the established Vaultwarden server and its compatible web vault
 with a native Windows launcher and independent recovery tools. Vault passwords
-and decryption remain in compatible clients. MyAccounts is an optional launcher
-identity; it never replaces your vault email, master password or MFA.
+and decryption remain in compatible clients. MyAccounts provides optional sign-in;
+it never replaces your vault master password or encryption protection.
+
+![My Vault with its Material-inspired interface](docs/screenshots/vault.jpg)
 
 ![Recovery and Portability in the running Windows app](docs/screenshots/recovery.png)
 
-**Preview:** independent CLI and server recovery have been exercised with synthetic
+**Release candidate:** browser, MyAccounts sign-in, CLI and server recovery have been exercised with synthetic
 data. Remaining client, clean-computer and security review gates are listed in
 [acceptance.json](docs/acceptance.json) and [Security review](docs/SECURITY-REVIEW.md).
 Do not treat this preview as production ready or store important credentials yet.
+
+**Windows download:** [My Vault 0.2.0 RC2](https://github.com/oneworkspacestudio/my-vault/releases/tag/v0.2.0-rc.2).
+It is also included in [One Workspace preview 26](https://github.com/oneworkspacestudio/one-workspace/releases/tag/v0.3.0-preview.26),
+with its own app tile, logo, optional MyAccounts connection and recovery guides.
 
 ## Start locally
 
@@ -72,6 +78,20 @@ See [Recovery](docs/RECOVERY.md), [Clients and format limits](docs/CLIENTS.md),
 [Hosting](docs/HOSTING.md), [Administration](docs/ADMIN.md) and the
 [threat model](docs/THREAT-MODEL.md).
 
+## Workspace sign-in
+
+The updated Workspace manager connects optional MyAccounts OIDC sign-in
+automatically, using a dedicated client on the vault's separate HTTPS origin.
+An active MyAccounts session skips another account sign-in. A locked vault still
+requires its encryption unlock. Create the independent vault account first and
+verify its matching MyAccounts email. Direct email/master-password access and
+independent encrypted recovery remain available if MyAccounts is down.
+[Sign-in and session details](docs/SIGN-IN.md).
+
+The browser, sign-in and owner tools use My Vault branding with a light,
+Material-inspired interface. Upstream JavaScript remains byte-for-byte intact;
+the narrow additional script only handles presentation and standard SSO navigation.
+
 ## Build and acceptance
 
 Build from the exact [upstream lock](upstream.lock.json) on Windows/MSVC with
@@ -82,6 +102,8 @@ This repository tracks actual results in [acceptance.json](docs/acceptance.json)
 Mobile work is deferred at the owner's request. Unperformed device, clean-host or
 service checks are never represented as passed. Production release eligibility
 depends on independent recovery evidence and the documented acceptance matrix.
+See [remaining production gates](docs/PRODUCTION-GATES.md); a release candidate
+is not evidence that clean-machine, service/reboot or independent review passed.
 
 ## Upstream and licensing
 

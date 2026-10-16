@@ -30,6 +30,8 @@ import (
 type Runtime struct {
 	root                                string
 	config                              Config
+	sso                                 SSOConfig
+	ssoWarning                          string
 	runtimeFolder, engineSHA, engineURL string
 	engineAddress                       atomic.Value
 	gate                                sync.RWMutex
@@ -165,6 +167,14 @@ loop:
 }
 
 func (rt *Runtime) startEngine(ctx context.Context) error {
+	// An optional identity configuration must never prevent independent access.
+	sso, ssoErr := loadSSO(rt.root)
+	rt.ssoWarning = ""
+	if ssoErr != nil {
+		sso = SSOConfig{}
+		rt.ssoWarning = "MyAccounts integration needs repair. Independent vault sign-in remains available."
+	}
+	rt.sso = sso
 	port, e := net.Listen("tcp4", "127.0.0.1:0")
 	if e != nil {
 		return e
@@ -195,7 +205,8 @@ func (rt *Runtime) startEngine(ctx context.Context) error {
 			cmd.Env = append(cmd.Env, key+"="+value)
 		}
 	}
-	cmd.Env = append(cmd.Env, "DATA_FOLDER="+engine, "DATABASE_URL=sqlite://"+filepath.ToSlash(filepath.Join(engine, "db.sqlite3")), "CONFIG_FILE="+filepath.Join(engine, "myvault-disabled-config.json"), "WEB_VAULT_FOLDER="+filepath.Join(rt.runtimeFolder, "web-vault"), "DOMAIN="+rt.config.Origin, "ROCKET_ADDRESS=127.0.0.1", fmt.Sprintf("ROCKET_PORT=%d", address), "ROCKET_WORKERS=4", "ADMIN_TOKEN=", "DISABLE_ADMIN_TOKEN=false", "SSO_ENABLED=false", "SIGNUPS_ALLOWED=false", "INVITATIONS_ALLOWED=false", "ORG_CREATION_USERS=all", "SIGNUPS_VERIFY=false", "IP_HEADER=X-Real-IP", "IP_HEADER_TRUSTED_PROXIES=127.0.0.1/32", "ICON_SERVICE=internal", "DISABLE_ICON_DOWNLOAD=true", "ENABLE_WEBSOCKET=true", "PUSH_ENABLED=false", "SHOW_PASSWORD_HINT=false", "LOG_LEVEL=warn", "EXTENDED_LOGGING=false")
+	cmd.Env = append(cmd.Env, "DATA_FOLDER="+engine, "DATABASE_URL=sqlite://"+filepath.ToSlash(filepath.Join(engine, "db.sqlite3")), "CONFIG_FILE="+filepath.Join(engine, "myvault-disabled-config.json"), "WEB_VAULT_FOLDER="+filepath.Join(rt.runtimeFolder, "web-vault"), "DOMAIN="+rt.config.Origin, "ROCKET_ADDRESS=127.0.0.1", fmt.Sprintf("ROCKET_PORT=%d", address), "ROCKET_WORKERS=4", "ADMIN_TOKEN=", "DISABLE_ADMIN_TOKEN=false", "SIGNUPS_ALLOWED=false", "INVITATIONS_ALLOWED=false", "ORG_CREATION_USERS=all", "SIGNUPS_VERIFY=false", "IP_HEADER=X-Real-IP", "IP_HEADER_TRUSTED_PROXIES=127.0.0.1/32", "ICON_SERVICE=internal", "DISABLE_ICON_DOWNLOAD=true", "ENABLE_WEBSOCKET=true", "PUSH_ENABLED=false", "SHOW_PASSWORD_HINT=false", "LOG_LEVEL=warn", "EXTENDED_LOGGING=false")
+	cmd.Env = append(cmd.Env, sso.engineEnvironment()...)
 	// Registration is a local-owner, time-limited email allowlist, not unrestricted
 	// signup. Enabling it never changes master-password derivation or encryption.
 	if rt.config.EnrollmentEmail != "" && time.Now().Before(rt.config.EnrollmentUntil) {
@@ -289,6 +300,9 @@ func (rt *Runtime) publicHandler() http.Handler {
 		r.Header.Del("X-MyVault-Proxy")
 	}
 	proxy.ModifyResponse = func(resp *http.Response) error {
+		if strings.HasPrefix(resp.Header.Get("Content-Type"), "text/html") {
+			resp.Header.Set("Cache-Control", "no-store")
+		}
 		local, _ := resp.Request.Context().Value(localClientKey{}).(string)
 		if local == "" || resp.Request.URL.Path != publicConfig.Base()+"/api/config" || resp.StatusCode != 200 {
 			return nil
@@ -360,6 +374,14 @@ func (rt *Runtime) publicHandler() http.Handler {
 		}
 		if path == "/_myvault/recovery" {
 			serveRecovery(w, r, publicConfig.Origin)
+			return
+		}
+		if path == "/_myvault/client-config" && r.Method == http.MethodGet {
+			rt.gate.RLock()
+			enabled := rt.sso.Enabled
+			rt.gate.RUnlock()
+			w.Header().Set("Cache-Control", "no-store")
+			writeJSON(w, map[string]any{"ssoEnabled": enabled, "ssoPath": "#/sso?identifier=one-workspace", "independentPath": "?login=independent#/login"})
 			return
 		}
 		if localHost && r.TLS == nil && r.Method == "GET" && path == "/" {

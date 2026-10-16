@@ -21,6 +21,6 @@
     "clientCommit": "d2a095eb800fe80a9bc524579b974796eae51994",
     "asset": "bw_web_v2026.7.0.tar.gz",
     "sha256": "002e972bf0d0487ec0324b06d916de33e29de4c29bffd92ee3b843084c300570",
-    "changes": "Title, icon and additive static CSS/Recovery links only; no cryptographic JavaScript changes"
+    "changes": "Branded HTML, content-versioned additive CSS and a narrow presentation/standard-SSO-navigation script; every original upstream JavaScript file is verified unchanged"
   }
 }

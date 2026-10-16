@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/kardianos/service"
+	"github.com/oneworkspacestudio/my-vault/internal/platform"
 	"github.com/oneworkspacestudio/my-vault/internal/vault"
 )
 
@@ -50,10 +51,13 @@ func (p *program) Stop(service.Service) error {
 	}
 	return nil
 }
-func serviceFor(root string, p *program) (service.Service, error) {
+func serviceFor(root string, p *program, override ...string) (service.Service, error) {
 	exe, e := os.Executable()
 	if e != nil {
 		return nil, e
+	}
+	if len(override) > 0 {
+		exe = override[0]
 	}
 	hash := sha256.Sum256([]byte(root))
 	return service.New(p, &service.Config{Name: fmt.Sprintf("OneWorkspaceMyVault-%x", hash[:6]), DisplayName: "My Vault", Description: "Independent Vaultwarden vault and encrypted recovery companion", Executable: exe, WorkingDirectory: root, Arguments: []string{"run", "--data", root, "--no-browser"}})
@@ -66,7 +70,22 @@ func runService(root string, c vault.Config) error {
 	return s.Run()
 }
 func controlService(root, action string) error {
-	s, e := serviceFor(root, &program{})
+	var executable []string
+	if action == "service-install" {
+		if _, e := platform.CheckDataVolume(root); e != nil {
+			return e
+		}
+		source, e := os.Executable()
+		if e != nil {
+			return e
+		}
+		protected, e := platform.InstallServiceBinary(source, root)
+		if e != nil {
+			return e
+		}
+		executable = []string{protected}
+	}
+	s, e := serviceFor(root, &program{}, executable...)
 	if e != nil {
 		return e
 	}

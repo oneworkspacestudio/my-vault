@@ -3,7 +3,7 @@ param(
  [Parameter(Mandatory)][string]$EngineReceipt,
  [Parameter(Mandatory)][string]$WebArchive,
  [Parameter(Mandatory)][string]$Cache,
- [string]$Version='0.1.0-preview.1',
+ [string]$Version='0.2.0-rc.2',
  [string]$Go='go',
  [string]$Python='python'
 )

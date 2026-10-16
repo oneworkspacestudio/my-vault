@@ -15,10 +15,18 @@ database or separately installed web server is required. Persistent data are
 outside the executable. Moving to another computer uses encrypted backup/restore.
 
 Vaultwarden owns registration, client authentication, rate limits, MFA and APIs.
-Its independent master-password route always remains enabled. MyAccounts is only
-the ecosystem launcher identity; the vault does not receive Workspace client
-secrets. Workspace links to a distinct vault origin; it does not proxy the vault
-client or inject shared scripts. Standalone works with Workspace/MyAccounts absent.
+Its independent master-password route always remains enabled. MyAccounts is an
+optional upstream OIDC sign-in provider using a dedicated vault client, never the
+portal's client secret or session cookie. Workspace links to a distinct vault
+origin; it does not proxy the vault client or inject shared navigation scripts.
+Standalone works with Workspace/MyAccounts absent. See [Sign-in](SIGN-IN.md).
+
+The Material-inspired theme changes CSS, logo markup and page titles. A small
+first-party script adds the standard SSO link and starts that route on a fresh
+Workspace launch that reaches login. It never reads credential fields, browser
+vault storage, tokens, key material or Angular services. Every original upstream
+JavaScript file remains byte-for-byte unchanged. First-party assets have content
+hashes in filenames; HTML is served without caching to avoid stale upgrade UI.
 
 Public requests reach a loopback-only wrapper through a configured HTTPS proxy.
 Host validation and a fixed configured origin reject arbitrary proxy origins;

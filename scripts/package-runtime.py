@@ -32,23 +32,25 @@ before={f.relative_to(web).as_posix():sha(f.read_bytes()) for f in web.rglob('*.
 index=web/'index.html'
 html=index.read_text(encoding='utf-8')
 html=html.replace('<title page-title>Vaultwarden Web</title>','<title page-title>My Vault</title>')
-html=html.replace('</head>','<link rel="stylesheet" href="my-vault.css"/><link rel="icon" type="image/svg+xml" href="my-vault.svg"/></head>')
+html=html.replace('<img class="new-logo-themed !tw-w-[200px]" alt="Vaultwarden"/>','<img src="my-vault.svg" width="64" height="64" alt="My Vault"/>')
+css=(root/'web/client-light-tokens.css').read_bytes()+b'\n'+(root/'web/client-theme.css').read_bytes()
+ui=(root/'web/client-theme.js').read_bytes()
+css_name='my-vault.'+sha(css)[:16]+'.css'
+ui_name='my-vault-ui.'+sha(ui)[:16]+'.js'
+html=html.replace('</head>',f'<link rel="icon" type="image/svg+xml" href="my-vault.svg"/><script src="{ui_name}" defer></script></head>')
+html=html.replace('</body>',f'<link rel="stylesheet" href="{css_name}"/></body>')
 html=html.replace('</body>','<a class="myvault-recovery-link" href="_myvault/recovery">Recovery &amp; Portability ↗</a></body>')
 index.write_text(html,encoding='utf-8')
+connector=web/'sso-connector.html'
+connector_html=connector.read_text(encoding='utf-8')
+connector_html=connector_html.replace('<title>Bitwarden</title>','<title>My Vault · Signing in</title>')
+connector_html=connector_html.replace('class="new-logo-themed tw-mb-4" alt="Bitwarden"','src="my-vault.svg" width="64" height="64" class="tw-mb-4" alt="My Vault"')
+connector.write_text(connector_html,encoding='utf-8')
 shutil.copy2(root/'web/my-vault.svg',web/'my-vault.svg')
-css='''/* My Vault additive presentation. No client cryptography is modified. */
-:root{--color-primary-500:101 80 204;--color-primary-600:87 65 184;--color-primary-700:74 54 162}
-body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-bit-svg[aria-label="Bitwarden logo"]{background:url("my-vault.svg") left center/48px 48px no-repeat!important;min-width:210px;min-height:56px;align-items:center;padding-left:60px}
-bit-svg[aria-label="Bitwarden logo"] svg{display:none!important}
-bit-svg[aria-label="Bitwarden logo"]::after{content:"My Vault";font:700 25px system-ui;color:#34266a;white-space:nowrap}
-button[type="submit"]{background-color:#6550cc!important;border-color:#6550cc!important;color:white!important}
-.myvault-recovery-link{position:fixed;right:20px;bottom:18px;z-index:100;background:#fff;border:1px solid #dfd9f5;border-radius:10px;padding:10px 16px;color:#6550cc;font:600 12px system-ui;text-decoration:none;box-shadow:0 3px 18px #2221}
-.myvault-guide{max-width:850px;margin:45px auto;padding:30px;color:#17233b;line-height:1.8}.myvault-guide h1{font-size:36px;letter-spacing:-1.3px}.myvault-guide h2{margin-top:35px}.myvault-guide code{background:#f1eefb;padding:3px 5px;border-radius:4px}.myvault-guide p{color:#64718a}
-'''
-(web/'my-vault.css').write_text(css,encoding='utf-8')
+(web/css_name).write_bytes(css)
 after={f.relative_to(web).as_posix():sha(f.read_bytes()) for f in web.rglob('*.js')}
 if before!=after:raise SystemExit('Cryptographic/client JavaScript changed unexpectedly')
+(web/ui_name).write_bytes(ui)
 files={}
 for file in sorted(stage.rglob('*')):
     if file.is_file():

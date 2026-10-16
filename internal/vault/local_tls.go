@@ -54,6 +54,10 @@ func localCertificate(root string) (cert, key, thumbprint string, err error) {
 			err = errors.New("unexpected local HTTPS certificate")
 			return
 		}
+		if time.Now().Before(parsed.NotBefore) || !time.Now().Before(parsed.NotAfter) {
+			err = errors.New("local HTTPS certificate is expired or not yet valid; check the Windows clock or renew the local certificate through the documented repair procedure")
+			return
+		}
 		sum := sha1.Sum(block.Bytes)
 		thumbprint = hex.EncodeToString(sum[:])
 		return
