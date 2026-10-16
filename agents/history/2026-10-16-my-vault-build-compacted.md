@@ -196,3 +196,29 @@ local Workspace dist catalog has11apps; prospective12 includes vault only and is
 used solely for its scoped independent contract. Full build-org uses current pins
 and must verify all13apps, including My Tube. No component or Workspace release
 has yet been published for this task. Full Workspace25 build/test still remains.
+
+## Component publication and suite verification
+
+Published v0.1.0-preview.1 from1ff33c0e5cb33e817b3f741ddd97162c3fd042aa,
+all GitHub asset sizes/SHA256 checked. Windows ZIP SHA
+d0912e0f7780f4dbb4d4525480147f7b1079d1f45627d704a3aee7318064da1d,
+57,952,329bytes. Standalone executable66,552,832bytes. No Actions.
+The SDK source asset initially included44 upstream separately licensed paths.
+Temporarily drafted the release, removed that directory from the SDK source
+archive and replaced its source asset/checksums, then republished. Release body
+discloses this source-only packaging correction; all binary assets unchanged.
+Do not reintroduce restricted bitwarden_license code into any source archive.
+
+Workspace full installer25 was built with verified org assets and passed fresh
+isolated offline installation:13entries/11process health checks, exact My Vault
+org binary, no MyAccounts dependency, anonymous launch instructions to separate
+local HTTPS, recovery guides installed and prior autostart unchanged. Final
+manager/catalog/embedded setup refreshed after the last localhost-route fix;
+all packaged file bytes and vault's independent update contract verified.
+All test supervisor/app/shared-service processes stopped; live suite untouched.
+Workspace source42363fb, its release upload is underway at tooling/my-vault.
+
+Windows trust is still unchanged: certificate approval question unanswered.
+Browser/desktop/extension, second physical host, MFA/passkeys/collections,
+service/reboot and independent security acceptance remain explicitly open.
+Do not change productionEligible to true or call this a production release.
