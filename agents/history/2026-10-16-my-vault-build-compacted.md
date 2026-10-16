@@ -380,3 +380,33 @@ web assets relative to the tested Windows build. Preserve web/** as -text in
 .gitattributes and record those original bytes; no runtime/crypto change. Verify
 all embedded asset blobs match before archiving/releasing. Rebuilding the launcher
 from the current runtime/source already reproduced the exact tested RC2 hash.
+
+## RC2 released and suite preview 26 published
+
+Published https://github.com/oneworkspacestudio/my-vault/releases/tag/v0.2.0-rc.2
+from9e12239bd841729c51ac4a477ba262112eb20219. All27asset sizes/SHA256 matched GitHub;
+exact tested executable remains bf8ec3ec6fd5a73ab35946d926efd00cd3b1ffe537b38a1b2c7e4f6e787916fe.
+Windows ZIP c5829d27f217d57f300f8dd045851c41b1f20985938091532c40e555eed14b56,
+58009334bytes. Original client JS unchanged and all embedded web source blobs
+match tested bytes. Corrected upstream/dependency archives reused only after
+published digest checks and exclusion checks for restricted commercial paths.
+Both READMEs/main branches pushed. No Actions; both repos remain public.
+
+Windows stage names are case-insensitive: top-level acceptance.json holds aggregate
+native/installer evidence. Detailed matrix is acceptance-matrix.json and the ZIP's
+docs/acceptance.json. Release body distinguishes them; supplemental checksum file
+covers the separately attached matrix. No published binary was replaced. Use
+explicit UTF-8 in future publishing helpers and verify release titles/version,
+not only tags (temporary old helper titles were corrected through release metadata).
+
+One Workspace v0.3.0-preview.26 released from1132329eaaa5590603879e7686686d5a577092a7,
+with this exact org ZIP pin,13apps, logo/tile and sign-in/recovery guides. Actual
+fresh installer passed13entries/11process health and optional identity setup.
+Anonymous --check-updates selected preview26 plus Vault0.2.0-rc.2 and verified all
+package hashes, without installation or a GitHub token. Normal online installation
+now works; --offline is optional. Installer SHA
+bd9659e9519a59819df89c99565c5181a83fea5a1ccb957c654eb150f0f19441.
+Receipts outside Git: publication-rc2-final.json, workspace-publication26.json,
+public-install26-check.json and workspace26-cleanup.json. Fresh test suite removed
+after process/boundary/reparse checks; no live installation changed. Production
+eligibility remains false; the published releases are explicitly prereleases.
