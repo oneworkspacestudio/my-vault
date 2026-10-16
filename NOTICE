@@ -1,0 +1,14 @@
+My Vault is a One Workspace deployment and recovery companion for Vaultwarden.
+Copyright 2026 One Workspace contributors. AGPL-3.0-only.
+
+Vaultwarden is copyright Daniel Garcia and contributors, AGPL-3.0-only.
+https://github.com/dani-garcia/vaultwarden
+The compatible web vault is maintained at dani-garcia/bw_web_builds; its scripts
+and patches are GPL-3.0-only, based on the open-source Bitwarden clients. Exact
+source revisions, original notices and third-party licenses accompany releases.
+This project is independent of and is not endorsed by Bitwarden, Inc.
+
+Windows process, ACL and file helpers are adapted from One Workspace,
+copyright its contributors, Apache-2.0. The upstream Apache license is included.
+Backup encryption uses filippo.io/age, BSD-3-Clause; vault encryption remains
+entirely in the established compatible clients and Vaultwarden protocol.

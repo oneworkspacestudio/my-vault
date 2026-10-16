@@ -1,0 +1,10 @@
+/dist/
+/internal/payload/runtime.zip
+/internal/payload/manifest.json
+/vendor/
+*.exe
+*.syso
+*.log
+*.age
+*.db*
+/.local/

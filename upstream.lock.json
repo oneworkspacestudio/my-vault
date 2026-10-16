@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "engine": {
+    "repository": "https://github.com/dani-garcia/vaultwarden",
+    "tag": "1.37.4",
+    "commit": "7c188967e7a467b19b2757bc3326f9cf3ccae327",
+    "features": [
+      "sqlite",
+      "vendored_openssl"
+    ],
+    "rust": "1.99.0",
+    "license": "AGPL-3.0-only",
+    "cargoLockSHA256": "0e7beeed7017145f5f5cba36f347685f4e17b396531c9143984832117e3cd38b",
+    "dependencySecurityUpdate": "rustls 0.23.45 to 0.23.46; upstream application source unchanged"
+  },
+  "web": {
+    "repository": "https://github.com/dani-garcia/bw_web_builds",
+    "tag": "v2026.7.0",
+    "scriptsCommit": "fac81a4f35ede45965b220daa3255994abbf0eb1",
+    "clientSource": "https://github.com/vaultwarden/vw_web_builds",
+    "clientCommit": "d2a095eb800fe80a9bc524579b974796eae51994",
+    "asset": "bw_web_v2026.7.0.tar.gz",
+    "sha256": "002e972bf0d0487ec0324b06d916de33e29de4c29bffd92ee3b843084c300570",
+    "changes": "Title, icon and additive static CSS/Recovery links only; no cryptographic JavaScript changes"
+  }
+}
