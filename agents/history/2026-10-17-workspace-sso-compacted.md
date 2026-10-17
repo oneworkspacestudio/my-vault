@@ -87,3 +87,31 @@ retain the chosen address across updates and configure the exact native callback
 Component local recovery suppresses cross-origin SSO when its public hostname is
 configured, retaining independent local login. No encryption/engine dependency
 change; remote deployment and publication evidence will be appended separately.
+
+## RC3 publication and managed remote deployment completed
+
+Published [v0.2.0-rc.3](https://github.com/oneworkspacestudio/my-vault/releases/tag/v0.2.0-rc.3)
+from732e782a8ae26f073c3d11701368a5adfaecea44. All26 release asset sizes/digests
+verified; anonymous release metadata/Windows ZIP download respond200. Local build
+only, Actions disabled. Workspace preview32 pins this exact org ZIP/hash and is
+published with all13 apps. Deployment retains original engine/client JS, encrypted
+state, certificates and logical suite credentials. No password change/reset.
+
+The manager provisions a dedicated permanent HTTPS hostname on the existing
+managed tunnel, preserving all earlier DNS/ingress. First owner deployment rolled
+back on stale local upstream DNS; after cache expiry a fresh backed-up coordinated
+deployment completed. Fresh encrypted native Vault backup verified; cold Accounts
+and settings copied while stopped, prior full snapshots retained. No new native
+full-suite transaction, clean-host or recovery acceptance claimed.
+
+Owner Chrome launch from signed-in Workspace now reaches remote native #/lock
+without another account login or certificate warning. Master password is still
+required to decrypt; it was not entered/read. Owner tab left as handoff and blank
+unlock screenshot only in protected private maintenance. No item/save/unlock,
+client/recovery/service/reboot or automated tests added/run this task. Historical
+RC2 acceptance remains historical; productionEligible remains false. Stable origin
+and callback retained across updates; independent local HTTPS recovery preserved.
+
+Receipts outside Git: tooling/my-vault/release-rc3-build and Workspace release32
+folder. A documentation-only completion commit follows release source without
+retagging or replacing assets. No private evidence/screenshots/credentials in Git.
