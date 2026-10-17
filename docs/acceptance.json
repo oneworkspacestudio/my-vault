@@ -32,12 +32,16 @@
     "serviceBinaryProtection": "implemented protected administrator-owned NTFS supervisor copy; non-admin install rejection tested; elevated native lifecycle and reboot still unperformed",
     "firstAccountNativeRegistration": "passed: disposable first-run account created with official SDK using compatible legacy registration envelope; browser Create account submission not automated",
     "existingRootExecutableReplacement": "passed 0.2.0-rc.2 on same host: verified encrypted backup before replacement, original account/master password/item/certificate retained, clean CLI profile sign-in and browser unlock/edit passed; no clean-host reinstall claim",
-    "workspaceCandidateInstaller": "passed actual local 0.3.0-rc.2 offline installer: 13 apps installed, 11 process health checks, exact RC2 vault binary, optional MyAccounts configured, independent launcher/guides, existing autostart unchanged; live installation untouched"
+    "workspaceCandidateInstaller": "passed actual local 0.3.0-rc.2 offline installer: 13 apps installed, 11 process health checks, exact RC2 vault binary, optional MyAccounts configured, independent launcher/guides, existing autostart unchanged; live installation untouched",
+    "managedFirstAccountSSOHandoff": "RC3 fixes native canonical SSO identifier and managed verified-user provisioning. Local repair reached native first-master-password page through existing MyAccounts session. Browser credential submission/encrypted item acceptance not performed for this change.",
+    "dedicatedPublicOrigin": "RC3 supports managed Workspace preview32 dedicated hostname; local origin uses independent recovery login. Remote deployment observations are recorded in release build-info; no clean-host/recovery acceptance implied."
   },
   "checkedAt": "2026-10-16",
   "testedClient": "Official Bitwarden CLI 2026.9.1; compatible web vault 2026.7.0",
   "environment": "Windows amd64 on owner host, synthetic accounts, separate protected data roots and clean CLI profiles; no live Workspace or MyAccounts",
   "launcherSHA256": "bf8ec3ec6fd5a73ab35946d926efd00cd3b1ffe537b38a1b2c7e4f6e787916fe",
   "engineSHA256": "5aa19bc46dda061e20a373ddde0f92cc0f94ae15f2f14b61e8fb7e00f793169f",
-  "candidateVersion": "0.2.0-rc.2"
+  "candidateVersion": "0.2.0-rc.2",
+  "currentRelease": "0.2.0-rc.3",
+  "historicalEvidence": "Passed checks explicitly referring to RC2/earlier candidates are historical; they were not rerun for RC3."
 }

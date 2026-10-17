@@ -380,8 +380,17 @@ func (rt *Runtime) publicHandler() http.Handler {
 			rt.gate.RLock()
 			enabled := rt.sso.Enabled
 			rt.gate.RUnlock()
+			// OIDC browser binding belongs to the dedicated public origin. Local
+			// recovery keeps independent login rather than starting a callback
+			// on another origin which cannot carry that browser-binding cookie.
+			if localHost && !localVaultHostnameForSSO(external.Hostname()) {
+				enabled = false
+			}
 			w.Header().Set("Cache-Control", "no-store")
-			writeJSON(w, map[string]any{"ssoEnabled": enabled, "ssoPath": "#/sso?identifier=one-workspace", "independentPath": "?login=independent#/login"})
+			// The native engine's canonical SSO identifier selects its own
+			// enrollment/password-policy routes. A display label here makes the
+			// client request a nonexistent organization policy and log out.
+			writeJSON(w, map[string]any{"ssoEnabled": enabled, "ssoPath": "#/sso?identifier=00000000-01DC-01DC-01DC-000000000000", "independentPath": "?login=independent#/login"})
 			return
 		}
 		if localHost && r.TLS == nil && r.Method == "GET" && path == "/" {

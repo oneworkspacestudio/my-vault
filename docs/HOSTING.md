@@ -5,6 +5,27 @@ than sharing the browser origin of Drive, Notes or other Workspace apps. Those
 apps must not be able to read the vault client's local browser storage. The
 Workspace app tile is a link/launcher, not a replacement vault login.
 
+## Automatic hosting with One Workspace
+
+One Workspace preview 32 configures the dedicated Vault address through its
+existing Cloudflare connection. It chooses an unused first-level `vault` hostname
+(using a numbered alternative when needed), adds only that hostname's DNS and
+tunnel route, and registers the matching MyAccounts callback. Existing DNS
+records and other tunnel routes are retained. The saved address remains the same
+after app updates and restarts. No router ports or localhost certificate trust
+are required on remote devices.
+
+Open My Vault from Workspace to use this HTTPS address. The client reuses its
+vault session or automatically reuses your MyAccounts session. First-time users
+with a verified MyAccounts email choose their own encryption master password;
+later unlock follows the client lock policy. Independent sign-in is available
+at the same public address. When using the direct localhost recovery address
+after public hosting is enabled, use independent vault sign-in.
+
+Existing manually configured public Vault addresses are preserved. A local-only
+Workspace installation keeps local hosting. Standalone hosting can still be
+configured as described below.
+
 The Rust engine binds to an ephemeral loopback port. My Vault's gateway binds to
 the configured fixed loopback listener (8914 standalone; Workspace base+14).
 Only that gateway is a reverse-proxy target. Never expose the engine, `/admin`,

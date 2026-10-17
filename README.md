@@ -10,6 +10,12 @@ with a native Windows launcher and independent recovery tools. Vault passwords
 and decryption remain in compatible clients. MyAccounts provides optional sign-in;
 it never replaces your vault master password or encryption protection.
 
+When launched from One Workspace, My Vault reuses an active vault session or
+automatically starts MyAccounts sign-in. The managed connection can initialize
+a verified member's first vault account; choosing the encryption master password
+is a one-time client step. See [Sign-in and unlock](docs/SIGN-IN.md) for standalone
+configuration, recovery access and current onboarding acceptance limits.
+
 ![My Vault with its Material-inspired interface](docs/screenshots/vault.jpg)
 
 ![Recovery and Portability in the running Windows app](docs/screenshots/recovery.png)
@@ -19,8 +25,8 @@ data. Remaining client, clean-computer and security review gates are listed in
 [acceptance.json](docs/acceptance.json) and [Security review](docs/SECURITY-REVIEW.md).
 Do not treat this preview as production ready or store important credentials yet.
 
-**Windows download:** [My Vault 0.2.0 RC2](https://github.com/oneworkspacestudio/my-vault/releases/tag/v0.2.0-rc.2).
-It is also included in [One Workspace preview 26](https://github.com/oneworkspacestudio/one-workspace/releases/tag/v0.3.0-preview.26),
+**Windows download:** [My Vault 0.2.0 RC3](https://github.com/oneworkspacestudio/my-vault/releases/tag/v0.2.0-rc.3).
+It is also included in [One Workspace preview 32](https://github.com/oneworkspacestudio/one-workspace/releases/tag/v0.3.0-preview.32),
 with its own app tile, logo, optional MyAccounts connection and recovery guides.
 
 ## Start locally

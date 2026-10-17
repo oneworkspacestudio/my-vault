@@ -43,7 +43,8 @@ table button[id^="cipher-btn-"]{font-weight:500!important;color:#202124!importan
 .myvault-identity a{display:block;text-align:center;text-decoration:none;font:600 14px/1.4 Arial,sans-serif;color:#0b57d0;padding:12px 16px;border-radius:24px;border:1px solid #c4c7c5;background:#fff}
 .myvault-identity p{color:#5f6368;font:12px/1.6 Arial,sans-serif;margin:12px 0 0}
 .myvault-identity .myvault-independent{font-size:12px;border:0;padding:10px 0 0;background:transparent}
-/* Keep stock independent email/password controls alongside the direct OIDC link. */
+/* Independent email/password controls remain on the explicit recovery route. */
+.myvault-independent-form{display:none!important}
 .vw-email-continue,.vw-continue-login{display:block!important}
 .vw-email-sso,.vw-sso-login,.vw-or-text,.vw-other-login{display:none!important}
 .myvault-recovery-link{position:fixed;right:24px;bottom:18px;z-index:40;background:#f8fafd;border:1px solid #dadce0;border-radius:24px;padding:10px 16px;color:#0b57d0;font:500 12px Arial,sans-serif;text-decoration:none;box-shadow:0 1px 3px #3c40431a}

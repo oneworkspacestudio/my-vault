@@ -29,8 +29,10 @@ reachable symbol. GO-2026-5932 is present at module level for the unused,
 unmaintained x/crypto/openpgp package; this application does not import it.
 
 Optional MyAccounts integration never enables SSO-only authentication,
-unverified-email linking or public SSO registration. It links existing accounts
-with upstream verified-email checks, then retains the upstream issuer/subject
+unverified-email linking or anonymous registration. Managed Workspace may enable
+upstream SSO provisioning for its verified members; standalone configuration
+defaults to no provisioning. It links existing accounts with upstream
+verified-email checks, then retains the upstream issuer/subject
 association. Client secrets stay in protected NTFS configuration, never public
 bootstrap responses or presentation code. Restored backups start without the
 integration file. Invalid optional configuration falls back to independent

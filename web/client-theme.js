@@ -23,18 +23,21 @@
     if(!form||document.querySelector('.myvault-identity'))return;
     const box=document.createElement('section');box.className='myvault-identity';box.setAttribute('aria-label','MyAccounts sign-in');
     const link=document.createElement('a');link.href=settings.ssoPath;link.textContent='Continue with MyAccounts';
-    const hint=document.createElement('p');hint.textContent='Use your Workspace sign-in, then unlock your vault when asked. First time? Your server owner must open vault enrollment; use the same verified email as MyAccounts.';
+    const hint=document.createElement('p');hint.textContent='Your existing MyAccounts session signs you in. Unlock your vault when asked. On your first visit, choose a master password to protect your encrypted vault.';
     const direct=document.createElement('a');direct.className='myvault-independent';direct.href=settings.independentPath;direct.textContent='Use independent vault sign-in';
     box.append(link,hint,direct);form.before(box);
+    // Independent login is an explicit recovery choice, not a second identity
+    // form alongside MyAccounts. No account/password inputs are inspected.
+    form.classList.add('myvault-independent-form');
     // The unmodified client first reuses its own authenticated/locked session.
     // Only a fresh Workspace launch reaching login starts the standard SSO route.
     // Never retry automatically after an error/callback or override direct login.
-    if(launch&&!independent&&!attempted){attempted=true;location.hash=settings.ssoPath.slice(1)}
+    if(launch&&!independent&&!attempted){attempted=true;link.textContent='Signing you in with MyAccounts…';box.setAttribute('role','status');location.hash=settings.ssoPath.slice(1)}
   }
   function schedule(){if(!queued){queued=true;requestAnimationFrame(update)}}
   const observer=new MutationObserver(schedule);
   observer.observe(document.documentElement,{childList:true,subtree:true});
   addEventListener('hashchange',schedule);schedule();
   fetch(new URL('_myvault/client-config',document.baseURI),{credentials:'omit',cache:'no-store',redirect:'error'})
-    .then(r=>r.ok?r.json():null).then(value=>{if(value&&value.ssoPath==='#/sso?identifier=one-workspace'&&value.independentPath==='?login=independent#/login'){settings=value;schedule()}}).catch(()=>{});
+    .then(r=>r.ok?r.json():null).then(value=>{if(value&&value.ssoPath==='#/sso?identifier=00000000-01DC-01DC-01DC-000000000000'&&value.independentPath==='?login=independent#/login'){settings=value;schedule()}}).catch(()=>{});
 })();

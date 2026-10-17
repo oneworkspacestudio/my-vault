@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -20,10 +21,15 @@ import (
 // login remain entirely in the compatible client/server implementation.
 // This file is outside backups: restored vaults start without an IdP dependency.
 type SSOConfig struct {
-	Enabled      bool   `json:"enabled"`
-	Issuer       string `json:"issuer,omitempty"`
-	ClientID     string `json:"clientId,omitempty"`
-	ClientSecret string `json:"clientSecret,omitempty"`
+	Enabled           bool   `json:"enabled"`
+	Issuer            string `json:"issuer,omitempty"`
+	ClientID          string `json:"clientId,omitempty"`
+	ClientSecret      string `json:"clientSecret,omitempty"`
+	ProvisionAccounts bool   `json:"provisionAccounts,omitempty"`
+}
+
+func localVaultHostnameForSSO(host string) bool {
+	return strings.EqualFold(host, "localhost") || (net.ParseIP(host) != nil && net.ParseIP(host).IsLoopback())
 }
 
 func (s SSOConfig) Validate() error {
@@ -100,5 +106,8 @@ func (s SSOConfig) engineEnvironment() []string {
 	if !s.Enabled {
 		return []string{"SSO_ENABLED=false"}
 	}
-	return []string{"SSO_ENABLED=true", "SSO_ONLY=false", "SSO_SIGNUPS_ALLOWED=false", "SSO_SIGNUPS_MATCH_EMAIL=true", "SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION=false", "SSO_PKCE=true", "SSO_DEBUG_TOKENS=false", "SSO_AUTH_ONLY_NOT_SESSION=true", "SSO_SCOPES=email profile", "SSO_CLIENT_CACHE_EXPIRATION=0", "SSO_AUTHORITY=" + s.Issuer, "SSO_CLIENT_ID=" + s.ClientID, "SSO_CLIENT_SECRET=" + s.ClientSecret}
+	// Managed Workspace members may initialize their own vault after upstream
+	// validates OIDC/PKCE and a verified email. The compatible client alone sets
+	// the first master password and encryption keys. Ordinary signup stays closed.
+	return []string{"SSO_ENABLED=true", "SSO_ONLY=false", "SSO_SIGNUPS_ALLOWED=" + strconv.FormatBool(s.ProvisionAccounts), "SSO_SIGNUPS_MATCH_EMAIL=true", "SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION=false", "SSO_PKCE=true", "SSO_DEBUG_TOKENS=false", "SSO_AUTH_ONLY_NOT_SESSION=true", "SSO_SCOPES=email profile", "SSO_CLIENT_CACHE_EXPIRATION=0", "SSO_AUTHORITY=" + s.Issuer, "SSO_CLIENT_ID=" + s.ClientID, "SSO_CLIENT_SECRET=" + s.ClientSecret}
 }
